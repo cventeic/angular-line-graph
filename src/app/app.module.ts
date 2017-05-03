@@ -5,11 +5,13 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { LineGraphComponent } from './line-graph/line-graph.component';
+import { LineGraphAxisComponent } from './line-graph-axis/line-graph-axis.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LineGraphComponent
+    LineGraphComponent,
+    LineGraphAxisComponent
   ],
   imports: [
     BrowserModule,
@@ -17,6 +19,6 @@ import { LineGraphComponent } from './line-graph/line-graph.component';
     HttpModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent, LineGraphComponent]
 })
 export class AppModule { }
