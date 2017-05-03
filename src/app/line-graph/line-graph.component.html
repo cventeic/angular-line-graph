@@ -1,0 +1,121 @@
+<p>
+  line-graph works!
+</p>
+
+<style>
+
+body {
+  font: 10px sans-serif;
+  margin: 0;
+}
+
+path.line {
+  fill: none;
+  stroke-width: 2.0px;
+}
+
+path.area {
+  fill: #e7e7e7;
+}
+
+.outline {
+  fill: none;
+  stroke: #666;
+  stroke-width: 2.0px;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line, .x.axis path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2.0px;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2.0px;
+}
+
+</style>
+
+
+<div *ngIf="boxes">
+
+  <svg #svg_ref
+      [attr.height]="boxes.external.height" 
+      [attr.width]="boxes.external.width" >
+
+    <defs>
+      <clipPath id="myclip">
+        <rect id="clip-rect" x="0" y="0"
+          [attr.width]="boxes.internal.width" 
+          [attr.height]="boxes.internal.height" />
+      </clipPath>
+    </defs>
+
+    <svg:rect class="outline"
+      [attr.height]="boxes.external.height" 
+      [attr.width]="boxes.external.width" />
+
+    <g [attr.transform]="'translate(' + boxes.margin.left + ',' + boxes.margin.top + ')'" >
+
+      <g class="x axis" [attr.transform]="'translate(0,' + boxes.internal.height + ')'" >
+        <svg:g graph-axis [scale]="scales.x" orient="bottom" />
+        <text class="x label" text-anchor="end"
+          [attr.x]="boxes.internal.width" 
+          [attr.y]="-6"
+          >
+          x axis: {{titles.x_axis}}
+        </text>
+
+      </g>
+
+      <g class="y axis" transform="translate(0, 0)">
+        <svg:g graph-axis [scale]="scales.y" orient="left" />
+
+        <text class="y label" text-anchor="end" dy=".75em"
+          [attr.x]="0"
+          [attr.y]="6"
+          transform="rotate(-90)" >
+          y axis: {{titles.y_axis}}
+        </text>
+ 
+      </g>
+
+      <g class="content"  clip-path="url(#myclip)">
+
+        <g *ngFor="let series of series_set" [hidden]="series.show" >
+
+<!--
+              [attr.fill]="rgb(200,0,0)"
+-->
+
+          <g [attr.class]="'lineGroup series_'" >
+            <path class="line" 
+              [attr.d]="make_svg_median_point_string(series.data, scales)"
+                  style="stroke: rgb(0, 0, 255);"
+            />
+          </g>
+
+          <g class="dotGroup series_"  [attr.fill]="series.color" >
+            <circle *ngFor="let dot of series.data"
+               class="dot"
+               r="2" 
+               [attr.cx]="scales.x(dot.x)" 
+               [attr.cy]="scales.y(dot.y)" 
+               style="stroke: rgb(0, 0, 255);"
+               tooltip-append-to-body="true"
+               [attr.tooltip-html-unsafe]="tooltip_html(dot, series)"
+ 
+             />
+          </g>
+
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
